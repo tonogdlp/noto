@@ -2,6 +2,12 @@
 
 
 
+NOTO: 
+--> In spanish - Word that means 'I notice'  (Yo *noto*)
+--> In japanese - Word that means 'Notebook' (ノート) 
+--> The two sillables of my nickname (Tono), reversed. 
+
+
 
 Part 1. The grabber
 --> Should 
