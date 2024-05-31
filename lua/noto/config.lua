@@ -1,6 +1,26 @@
 ---@class NotoConfig
 local M = {}
 
+------------------------------------
+---          DEFINITIONS
+------------------------------------
+
+-- ---@class Noto.Config
+-- ---@field namespace_id number
+-- ---@field group_id number
+-- M.__index = M
+--
+-- function M:new()
+--   self = setmetatable({}, Noto)
+--   self.namespace_id = vim.api.nvim_create_namespace("noto")
+--   self.group_id = vim.api.nvim_create_augroup("NotoGroup", {})
+--   return self
+-- end
+
+M.defaults = {
+  last = {},
+  db_line_prefix = "[//$]",
+}
 ---@type NotoOptions
 M.options = {}
 
@@ -9,7 +29,4 @@ local defaults = {
   tmp = {},
 }
 
----@param opts NotoOptions?
-function M.setup(opts)
-  M.options = vim.tbl_deep_extend("force", {}, defaults, opts or {})
-end
+return M

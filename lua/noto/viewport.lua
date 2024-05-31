@@ -3,6 +3,8 @@ local M = {}
 ---
 ---
 
+M.vp_autogroup = vim.api.nvim_create_augroup("Noto.Viewport.Autogroup", {})
+
 ---@class Event
 ---@field buf number
 ---@field event string
@@ -59,6 +61,7 @@ function M.cursor_moved_in_file_with_db()
 	-- Autocmd --> when location changed, calculate if inside DB
 
 	vim.api.nvim_create_autocmd("CursorMoved", {
+		group = M.vp_autogroup,
 		pattern = "*.testdb",
 		callback = function()
 			local cur = vim.api.nvim_win_get_cursor(0)

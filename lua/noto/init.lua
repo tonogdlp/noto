@@ -1,41 +1,35 @@
-require("noto.viewport")
-
-------------------------------------
----          DEFINITIONS
-------------------------------------
-
----@class Noto
----@field namespace_id number
----@field group_id number
-local Noto = {}
-
-Noto.__index = Noto
+local utils = require("noto.utils")
+local config = require("noto.config")
+local viewport = require("noto.viewport")
 
 ------------------------------------
 ---            SETUP
 ------------------------------------
----@return Noto
-function Noto:new()
-	self = setmetatable({}, Noto)
-	self.namespace_id = vim.api.nvim_create_namespace("noto")
-	self.group_id = vim.api.nvim_create_augroup("NotoGroup", {})
-	return self
-end
+local Noto = {}
 
-Noto.defaults = {
+-- -@class Noto.Settings
+-- -@field db_line_prefx string
+
+-- -@type Noto.Settings
+local _defaults = {
 	last = {},
 	db_line_prefix = "[//$]",
 }
 
 function Noto.setup(opts)
-	if opts == nil then
-		opts = Noto.defaults
+	if not opts then
+		opts = {}
 	end
-	Noto:new()
-
-	return Noto
+	-- -@type Noto.settings
+	Noto._settings = utils.merge_table_impl(_defaults, opts)
 end
 
 Noto.setup()
+
+function test()
+	print("This is a another test")
+end
+
+vim.api.nvim_create_user_command("Test", test, {})
 
 return Noto
