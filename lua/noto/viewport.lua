@@ -26,6 +26,8 @@ Viewport.win_id = nil
 ---@field title string
 ---@field style string
 
+---@alias Buf_id integer
+
 Viewport.in_viewport = false
 
 ---@alias Db_Locations table<string, LineRange>
@@ -57,31 +59,27 @@ vim.api.nvim_create_user_command("Test", test, {})
 -- { 10, 12 }
 
 ---@alias CursorPosition [integer, integer]
----
+
+---@alias Db_id string
 
 ---@param cursor_pos CursorPosition
+---@return Db_id?
 function Viewport.line_is_notodb(cursor_pos)
+	---@param v LineRange
 	for k, v in Viewport.db_locations do
-	end
-	if cursor_pos[1] >= Viewport.db_location.x_i and cursor_pos[1] <= Viewport.db_location.x_f then
-		return true
-	else
-		return false
+		if cursor_pos[1] >= v.x_i and cursor_pos[1] <= v.x_f then
+			return k
+		else
+			return nil
+		end
 	end
 end
 
-function Viewport.replace_dbmarks_in_file(filepath)
-	local tmp_db_text = {
-		"id |  date       |  person  | payment",
-		"1  |  2024-05-01 | Angel A. | 123.45",
-		"2  |  2024-05-03 | Bandit H.| 678.91",
-		"3  |  2024-05-04 | Chili H. | 234.56",
-		"4  |  2024-05-10 | Daniel G.| 789.10",
-		"5  |  2024-05-10 | Daniel G.| 789.10",
-	}
-
+function Viewport.replace_dbmarks_in_file()
 	---@param v LineRange
 	for k, v in pairs(Viewport.db_locations) do
+		local tmp_filepath = "./lua/tests/testdb/" .. k .. ".txt"
+		local tmp_db_text = vim.fn.readfile(tmp_filepath, "", 3)
 		vim.api.nvim_buf_set_lines(0, v.x_i, v.x_f - 1, true, tmp_db_text)
 	end
 end
@@ -99,7 +97,7 @@ function Viewport.cursor_moved_in_file_with_db()
 			if is_inside_db then
 				if not Viewport.in_viewport then
 					Viewport.in_viewport = true
-					Viewport.db_viewport_entered(cur)
+					Viewport.db_viewport_entered(is_inside_db)
 				end
 			else
 				if Viewport.in_viewport then
@@ -111,15 +109,15 @@ function Viewport.cursor_moved_in_file_with_db()
 	})
 end
 
----@param cursor_pos CursorPosition
-function Viewport.create_window_config(cursor_pos)
+---@param range LineRange
+function Viewport.create_window_config(range)
 	local opts = {
 		relative = "win",
 		anchor = "NW",
-		row = cursor_pos[1],
-		col = 3,
-		height = 10,
-		width = 30,
+		row = range.x_i,
+		col = 3, --TODO: Specify `col` in plugin options
+		height = range.x_f - range.x_i,
+		width = 40,
 		border = "rounded",
 		title = "test",
 		style = "minimal",
@@ -127,10 +125,11 @@ function Viewport.create_window_config(cursor_pos)
 	return opts
 end
 
----@param cursor_pos CursorPosition
-function Viewport.db_viewport_entered(cursor_pos)
-	print("viewport entered")
-
+-- -@param cursor_pos CursorPosition
+---@param db_id Db_id
+---@return buf_id Buf_id
+function Viewport.db_viewport_entered(db_id)
+	print("viewport entered. DB_id: ", db_id, ", line: ")
 	local buf_id = vim.api.nvim_create_buf(false, true)
 
 	vim.fn.bufload(buf_id)
@@ -138,8 +137,9 @@ function Viewport.db_viewport_entered(cursor_pos)
 	local win_id = vim.api.nvim_open_win(buf_id, true, config)
 
 	print("BUF_id --> " .. buf_id)
-	Viewport.buf_id = buf_id
-	Viewport.win_id = win_id
+	-- Viewport.db_locations[db_id]['buf_id'] = buf_id
+	-- Viewport.win_id = win_id
+	return buf_id
 end
 
 --

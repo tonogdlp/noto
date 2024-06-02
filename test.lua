@@ -10,6 +10,16 @@
 --
 -- print(text:match('db="([^"]+)'))
 
-local text = "```notodb db1\n```"
+--
+-- --------
+-- local text = "```notodb db1\n```"
+--
+--
+-- print(text:match("notodb ([^\n]+)"))
+--
+--
+--
+-- --------
 
-print(text:match("notodb ([^\n]+)"))
+-- P(vim.fn.readfile("../tests/testdb/db1.txt", "", 5))
+P(vim.fn.readfile("./lua/tests/testdb/db1.txt", "", 2))

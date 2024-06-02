@@ -1,0 +1,7 @@
+
+id |  date       |  person  | payment  | related
+1  |  2023-05-01 | Elton O. | 123.45   |  test1,
+2  |  2023-05-03 | Frank E. | 678.91   |  test2,
+3  |  2023-05-04 | Gaby G.  | 234.56   |  test3,
+4  |  2023-05-10 | Heli  H. | 789.10   |  test4,
+5  |  2023-05-10 | Iris I   | 789.10   |  test5,
